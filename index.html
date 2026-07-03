@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>کۆمپانیای عەقاراتی — پەیوەندی و ئەکاونتەکان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* --- Light Mode Colors --- */
+    --bg-light: #F0F2F5;
+    --card-bg-light: #FFFFFF;
+    --text-primary-light: #1C1E21;
+    --text-secondary-light: #65676B;
+    --accent-light: #1877F2; /* Example: Facebook Blue */
+    --accent-soft-light: #E7F3FF;
+
+    /* --- Dark Mode Colors (Original Theme) --- */
+    --bg-dark: #0E1626;
+    --card-bg-dark: #16213A;
+    --card-bg-2-dark: #1C2A47;
+    --text-primary-dark: #F2EBDD; /* cream */
+    --text-secondary-dark: #8FA0BC; /* muted */
+    --accent-dark: #CBA135; /* gold */
+    --accent-soft-dark: #E4C878;
+
+    /* --- Default variables --- */
+    --bg: var(--bg-dark);
+    --card-bg: var(--card-bg-dark);
+    --card-bg-2: var(--card-bg-2-dark);
+    --text-primary: var(--text-primary-dark);
+    --text-secondary: var(--text-secondary-dark);
+    --accent: var(--accent-dark);
+    --accent-soft: var(--accent-soft-dark);
+
+    --whatsapp: #3BC17A;
+    --radius: 18px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family:'Tajawal', sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:36px 16px 60px;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: var(--bg-light);
+      --card-bg: var(--card-bg-light);
+      --card-bg-2: #F8F9FA;
+      --text-primary: var(--text-primary-light);
+      --text-secondary: var(--text-secondary-light);
+      --accent: var(--accent-light);
+      --accent-soft: var(--accent-light);
+    }
+    .skyline-wrap { display: none; } /* Hide skyline in light mode for simplicity */
+    .logo-badge { margin-top: 20px !important; }
+  }
+
+  .card{
+    width:100%;
+    max-width:460px;
+  }
+
+  /* ===== Skyline signature header ===== */
+  .skyline-wrap{
+    position:relative;
+    height:150px;
+    border-radius:var(--radius);
+    overflow:hidden; 
+    background:linear-gradient(180deg, #22315A 0%, var(--card-bg) 100%);
+    box-shadow:0 20px 40px -18px rgba(0,0,0,.6);
+  }
+  .skyline-wrap svg{
+    position:absolute;
+    bottom:0; left:0; width:100%; height:100%;
+  }
+  .glow{
+    position:absolute;
+    top:-40%; left:50%; transform:translateX(-50%);
+    width:260px; height:260px;
+    border-radius:50%; 
+    background:radial-gradient(circle, rgba(203,161,53,.55) 0%, rgba(203,161,53,0) 70%);
+    animation:breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{ opacity:.55; transform:translateX(-50%) scale(1); }
+    50%{ opacity:.9; transform:translateX(-50%) scale(1.12); }
+  }
+
+  /* ===== Logo badge ===== */
+  .logo-badge{
+    width: auto;
+    max-width: 200px; /* دەتوانیت ئەم قەبارەیە بگۆڕیت */
+    height: auto;
+    min-height: 80px; /* بۆ پاراستنی باڵانسی دیزاین */
+    background: transparent;
+    border: none;
+    margin:-56px auto 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  .logo-badge img{
+    max-width:100%;
+    max-height:120px; /* بۆ ئەوەی لۆگۆکە زۆر درێژ نەبێت */
+    object-fit:contain;
+  }
+  .logo-placeholder{ 
+    color:var(--muted);
+    font-size:11px;
+    text-align:center;
+    line-height:1.5;
+    padding:6px;
+  }
+
+  .identity{
+    text-align:center;
+    margin-top:16px;
+  }
+  .identity h1{
+    font-family:'Cairo', sans-serif;
+    font-weight:800;
+    font-size:22px;
+    letter-spacing:.2px; 
+    color:var(--text-primary);
+  }
+
+  /* Slogan Slider */
+  .slogan-slider {
+    height: 20px; /* Adjust to fit font size */
+    overflow: hidden;
+    position: relative;
+    margin-top: 8px;
+  }
+  .slogan-slider-inner {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    animation: slide-up 12s ease-in-out infinite;
+  }
+  .slogan-slider-inner span {
+    display: block;
+    height: 20px; /* Must match container height */
+    line-height: 20px;
+    color:var(--accent-soft);
+    font-size:13.5px;
+    font-weight:500;
+  }
+  @keyframes slide-up {
+    0%, 20% { top: 0; }       /* Item 1 */
+    25%, 45% { top: -20px; }  /* Item 2 */
+    50%, 70% { top: -40px; }  /* Item 3 */
+    75%, 95% { top: -60px; }  /* Item 4 */
+    100% { top: 0; }
+  }
+
+  /* ===== Divider with pin ===== */
+  .divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:26px 0 18px;
+  }
+  .divider::before, .divider::after{
+    content:"";
+    flex:1;
+    height:1px; 
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.3;
+  }
+  .divider span{
+    color:var(--muted);
+    letter-spacing:1px;
+  }
+
+  /* ===== Link list ===== */
+  .links{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .link-row{
+    display:flex;
+    align-items:center;
+    gap:14px; 
+    background:linear-gradient(180deg, var(--card-bg-2), var(--card-bg));
+    border:1px solid transparent;
+    border-radius:14px;
+    padding:14px 16px;
+    text-decoration:none;
+    color:var(--text-primary);
+    transition:transform .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .link-row:active{ transform:scale(.97); }
+  .link-row:hover{
+    border-color: var(--accent);
+    background: var(--card-bg-2);
+  }
+  .icon-circle{
+    flex:0 0 auto;
+    width:42px; height:42px;
+    border-radius:50%;
+    display:flex; 
+    align-items:center;
+    justify-content:center;
+    background: var(--accent-soft-light);
+    color:var(--accent);
+  }
+  .icon-circle svg{ width:20px; height:20px; }
+  .link-text{ flex:1; }
+  .link-text .label{
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size:15px;
+  }
+  .link-text .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .chevron{ color:var(--muted); flex:0 0 auto; }
+
+  .whatsapp .icon-circle{ background:rgba(59,193,122,.18); color:var(--whatsapp); }
+
+  /* ===== Phone Numbers Section ===== */
+  .phone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .phone-block {
+    background: linear-gradient(180deg, var(--card-bg-2), var(--card-bg));
+    border: 1px solid transparent;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .phone-block:hover {
+    border-color: var(--accent);
+  }
+  .phone-name {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .phone-number-display {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+  }
+
+  .copy-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: background .2s;
+    flex-shrink: 0;
+  }
+  .copy-btn:hover { background: var(--accent-soft); color: var(--accent); }
+  .copy-btn:active { transform: scale(0.95); }
+
+  footer{
+    text-align:center;
+    margin-top:30px;
+    color:var(--muted);
+    font-size:11.5px; 
+    line-height:1.8;
+  }
+  footer b{ color:var(--gold-soft); }
+
+  @media (prefers-reduced-motion: reduce){
+    .glow{ animation:none; }
+  }
+
+  /* Admin Panel Styles */
+  .admin-panel {
+    background: var(--card-bg-2);
+    border: 1px solid var(--accent);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: var(--radius);
+  }
+  .admin-panel h3 {
+    color: var(--accent);
+    font-family: 'Cairo', sans-serif;
+    margin-bottom: 15px;
+  }
+  .admin-panel .field { margin-bottom: 12px; }
+  .admin-panel label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .admin-panel input {
+    width: 100%; padding: 10px; border-radius: 8px;
+    border: 1px solid var(--card-bg); background: var(--bg);
+    color: var(--text-primary); font-family: 'Tajawal', sans-serif;
+  }
+  .admin-panel button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--accent); color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+  /* ===== Special Ads Section ===== */
+  .special-ads-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .ad-card {
+    text-decoration: none;
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--card-bg-2);
+    border: 1px solid var(--card-bg-2);
+    transition: transform .2s ease, box-shadow .2s ease;
+    aspect-ratio: 1 / 1;
+  }
+  .ad-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  .ad-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .ad-card .ad-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    color: white; font-size: 11px; padding: 12px 8px 6px;
+    text-align: center; font-weight: 500;
+  }
+  .ad-card.img-error::before {
+    content: '🖼️\A کرتە بکە بۆ بینینی وێنە';
+    white-space: pre;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-align: center;
+    padding: 5px;
+    line-height: 1.6;
+    background-color: var(--card-bg-2);
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- ===== Skyline + logo (this is the "hero") ===== -->
+  <div class="skyline-wrap">
+    <div class="glow"></div>
+    <svg viewBox="0 0 460 150" preserveAspectRatio="none">
+      <polygon points="0,150 0,95 30,95 30,70 55,70 55,100 85,100 85,60 115,60 115,90 150,90 150,50 185,50 185,95 215,95 215,75 250,75 250,105 285,105 285,65 320,65 320,95 350,95 350,80 385,80 385,110 415,110 415,90 460,90 460,150" 
+        fill="var(--bg-dark)" opacity="0.9"/>
+      <polygon points="0,150 0,115 25,115 25,130 60,130 60,105 95,105 95,125 130,125 130,100 165,100 165,120 200,120 200,110 235,110 235,130 270,130 270,115 305,115 305,135 340,135 340,120 375,120 375,140 410,140 410,125 460,125 460,150" 
+        fill="var(--card-bg-dark)"/>
+    </svg>
+  </div>
+
+  <!-- ===== LOGO: replace the placeholder below with <img src="logo.png" alt="لۆگۆ"> ===== -->
+  <div class="logo-badge">
+    <img id="company-logo" src="https://lh3.googleusercontent.com/a/ACg8ocJRQzMhFYAQxw5UZ3qOIPHb_vhL3t5qMOBHMhBylw6x7dgHekrn=s288-c-no" alt="لۆگۆی کۆمپانیا" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="logo-placeholder" style="display:none; align-items:center; justify-content:center;">
+      لۆگۆی کۆمپانیا<br>لێرە دابنێ
+    </div>
+  </div>
+
+  <div class="identity">
+    <!-- ناوی کۆمپانیا لێرە بگۆڕە -->
+    <h1 id="company-name">ناوی کۆمپانیای عەقاراتی</h1>
+    <div class="slogan-slider">
+      <div id="slogan-slider-inner" class="slogan-slider-inner"></div>
+    </div>
+  </div>
+
+  <div class="divider"><span>پەیوەندی و ئەکاونتەکان</span></div>
+
+  <div class="links" id="links-container"></div>
+
+  <!-- بەشی ڕیکلامە تایبەتەکان -->
+  <div class="divider"><span>موڵکە تایبەتەکان</span></div>
+  <div class="special-ads-container" id="special-ads-container"></div>
+
+  <div id="admin-section" style="display: none;"></div>
+
+  <footer>
+    © <span id="year"></span> — <b>ناوی کۆمپانیای عەقاراتی</b><br>
+    هەموو مافەکان پارێزراون
+  </footer>
+</div>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const linksContainer = document.getElementById('links-container');
+const adminSection = document.getElementById('admin-section');
+const companyNameEl = document.getElementById('company-name');
+const companyLogoEl = document.getElementById('company-logo');
+
+const ICONS = {
+  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  whatsapp: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.001 2C6.478 2 2 6.478 2 12c0 1.821.487 3.53 1.338 5.003L2 22l5.116-1.338A9.94 9.94 0 0 0 12.001 22C17.523 22 22 17.522 22 12S17.523 2 12.001 2zm0 18.2a8.18 8.18 0 0 1-4.168-1.14l-.299-.177-3.037.795.81-2.96-.194-.304A8.174 8.174 0 0 1 3.8 12c0-4.522 3.678-8.2 8.201-8.2 4.522 0 8.199 3.678 8.199 8.2 0 4.523-3.677 8.2-8.199 8.2z"/></svg>`,
+  instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+  facebook: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.5-3.2h-3V8.2c0-.9.25-1.5 1.55-1.5H16.6V3.9C16.3 3.86 15.3 3.77 14.16 3.77c-2.4 0-4.04 1.46-4.04 4.15v2.38H7.6v3.2h2.52V21h3.38z"/></svg>`,
+  tiktok: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82c-.9-.86-1.4-2.05-1.4-3.32h-3.07v13.6a2.74 2.74 0 1 1-2.75-2.75c.28 0 .55.04.8.12V10.3a5.9 5.9 0 0 0-.8-.05 5.83 5.83 0 1 0 5.83 5.83V9.4a7.1 7.1 0 0 0 4.14 1.32V7.63a3.98 3.98 0 0 1-2.75-1.81z"/></svg>`,
+  location: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+};
+
+let appData = {
+  companyName: "ناوی کۆمپانیای عەقاراتی",
+  slidingSlogans: [
+    "نڤێسینگه‌ها كرین و فروتنا خانی و ئه‌ردی",
+    "ب كرێدانا خانی و شوقا",
+    "ڕاوێژكاریی یاسایی عه‌قاری",
+    "به‌رێوه‌برنا مولكان"
+  ],
+  logoUrl: "https://lh3.googleusercontent.com/a/ACg8ocJRQzMhFYAQxw5UZ3qOIPHb_vhL3t5qMOBHMhBylw6x7dgHekrn=s288-c-no",
+  links: [
+    { type: 'phone', label: 'کارمەندی کوردی', sub: '0750 123 4567', url: 'tel:+9647501234567' },
+    { type: 'phone', label: 'الموظف العربي', sub: '0770 123 4567', url: 'tel:+9647701234567' },
+    { type: 'whatsapp', label: 'واتساپ', sub: 'نامە یان پەیوەندی ڕاستەوخۆ', url: 'https://wa.me/9647500000000' },
+    { type: 'instagram', label: 'ئینستاگرام', sub: '@yourcompany', url: 'https://instagram.com/yourcompany' },
+    { type: 'facebook', label: 'فەیسبووک', sub: 'پەیج بینین', url: 'https://facebook.com/yourcompany' },
+    { type: 'tiktok', label: 'تیک تۆک', sub: '@yourcompany', url: 'https://tiktok.com/@yourcompany' },
+  ],
+  specialAds: [
+    { label: 'موڵکی #١', imageUrl: 'https://via.placeholder.com/150/1a1a2e/fff?text=AD+1', linkUrl: '#' },
+    { label: 'موڵکی #٢', imageUrl: 'https://via.placeholder.com/150/1a1a2e/fff?text=AD+2', linkUrl: '#' },
+    { label: 'موڵکی #٣', imageUrl: 'https://via.placeholder.com/150/1a1a2e/fff?text=AD+3', linkUrl: '#' }
+  ]
+};
+
+function saveData() {
+  localStorage.setItem('realEstateAppData', JSON.stringify(appData));
+}
+
+function loadData() {
+  const savedData = localStorage.getItem('realEstateAppData');
+  if (savedData) {
+    // دڵنیادەبینەوە کە داتای نوێ لەگەڵ داتای کۆن تێکەڵ دەبێت
+    // بۆ ئەوەی ئەگەر نرخی نوێ زیادکرا، کێشە دروست نەکات
+    const loadedData = JSON.parse(savedData);
+    appData = { ...appData, ...loadedData };
+  }
+}
+
+function renderLinks() {
+  companyNameEl.textContent = appData.companyName;
+  
+  const sloganContainer = document.getElementById('slogan-slider-inner');
+  sloganContainer.innerHTML = appData.slidingSlogans.map(s => `<span>${s}</span>`).join('');
+  // Update animation based on number of slogans
+  const steps = appData.slidingSlogans.length;
+  sloganContainer.style.animationName = 'none'; // Reset animation to apply new duration
+  setTimeout(() => { sloganContainer.style.animationName = 'slide-up'; }, 10);
+
+  // دڵنیادەبینەوە کە ئەگەر لینکی لۆگۆکە کێشەی هەبوو، یەکێکی دیاریکراو بەکاردێت
+  companyLogoEl.src = appData.logoUrl || "https://lh3.googleusercontent.com/a/ACg8ocJRQzMhFYAQxw5UZ3qOIPHb_vhL3t5qMOBHMhBylw6x7dgHekrn=s288-c-no";
+  companyLogoEl.onerror = () => {
+    // ئەگەر لینکی هەڵبژێردراو کاری نەکرد، بگەڕێوە بۆ لینکی بنەڕەتی
+    companyLogoEl.src = "https://lh3.googleusercontent.com/a/ACg8ocJRQzMhFYAQxw5UZ3qOIPHb_vhL3t5qMOBHMhBylw6x7dgHekrn=s288-c-no";
+  };
+
+  const phoneLinks = appData.links.filter(link => link.type === 'phone');
+  const otherLinks = appData.links.filter(link => link.type !== 'phone');
+
+  let phoneHTML = phoneLinks.length > 0 ? '<div class="phone-grid">' : '';
+  phoneLinks.forEach(link => {
+    const phoneNumber = link.url.replace('tel:', '');
+    phoneHTML += `
+      <div class="phone-block">
+        <div class="phone-name">${link.label}</div>
+        <div class="phone-number-display">${link.sub}</div>
+        <button class="copy-btn" onclick="copyToClipboard('${phoneNumber}', this)">کۆپی</button>
+      </div>
+    `;
+  });
+  if (phoneLinks.length > 0) phoneHTML += '</div>';
+
+  const otherLinksHTML = otherLinks.map(link => {
+    const isWhatsapp = link.type === 'whatsapp';
+    return `
+      <a class="link-row ${isWhatsapp ? 'whatsapp' : ''}" href="${link.url}" target="_blank" rel="noopener">
+        <div class="icon-circle">${ICONS[link.type] || ''}</div>
+        <div class="link-text">
+          <div class="label">${link.label}</div>
+          <div class="sub">${link.sub}</div>
+        </div>
+        <div class="chevron">‹</div>
+      </a>
+    `;
+  }).join('');
+
+  linksContainer.innerHTML = phoneHTML + otherLinksHTML;
+  renderSpecialAds();
+}
+
+function renderSpecialAds() {
+  const container = document.getElementById('special-ads-container');
+  container.innerHTML = appData.specialAds.map(ad => {
+    if (!ad.imageUrl || !ad.linkUrl) return '';
+    return `
+      <a href="${ad.linkUrl}" target="_blank" rel="noopener" class="ad-card">
+        <img src="${ad.imageUrl}" alt="${ad.label}" onerror="this.style.display='none'; this.parentElement.classList.add('img-error');">
+        <div class="ad-label">${ad.label}</div>
+      </a>
+    `;
+  }).join('');
+}
+
+function copyToClipboard(text, button) {
+  navigator.clipboard.writeText(text).then(() => {
+    button.textContent = 'کۆپی کرا!';
+    setTimeout(() => { button.textContent = 'کۆپی'; }, 2000);
+  }).catch(err => console.error('Failed to copy: ', err));
+}
+
+function renderAdminPanel() {
+  adminSection.style.display = 'block';
+  let fieldsHTML = `
+    <div class="field">
+      <label>ناوی کۆمپانیا</label>
+      <input type="text" id="admin-company-name" value="${appData.companyName}">
+    </div>
+    <div class="field">
+      <label>دەقەکانی سلایدەر (هەر یەکەی لەسەر دێڕێک)</label>
+      <textarea id="admin-slogans" rows="4" style="font-size: 12px; padding: 8px;">${appData.slidingSlogans.join('\n')}</textarea>
+    </div>
+    <div class="field">
+      <label>لینکی لۆگۆ</label>
+      <input type="text" id="admin-logo-url" value="${appData.logoUrl}">
+    </div>
+  `;
+
+  appData.links.forEach((link, index) => {
+    fieldsHTML += `
+      <div class="field">
+        <label>URLی بەستەری #${index + 1} (${link.type})</label>
+        <input type="text" id="admin-link-label-${index}" value="${link.label}" placeholder="ناونیشان (Label)">
+      </div>
+      <div class="field" style="margin-top:-8px;">
+        <input type="text" id="admin-link-sub-${index}" value="${link.sub}" placeholder="دەقی ژێرەوە (Subtext)">
+        <input type="text" id="admin-link-${index}" value="${link.url}">
+      </div>
+    `;
+  });
+
+  fieldsHTML += `<hr style="border-color: var(--accent); opacity: 0.2; margin: 20px 0;">`;
+
+  appData.specialAds.forEach((ad, index) => {
+    fieldsHTML += `
+      <div class="field">
+        <label>ڕیکلامی تایبەتی #${index + 1}</label>
+        <input type="text" id="admin-ad-label-${index}" value="${ad.label}" placeholder="ناونیشانی ڕیکلام">
+        <input type="text" id="admin-ad-image-${index}" value="${ad.imageUrl}" placeholder="لینکی وێنە" style="margin-top: 8px;">
+        <input type="text" id="admin-ad-link-${index}" value="${ad.linkUrl}" placeholder="لینکی کرتەکردن" style="margin-top: 8px;">
+      </div>
+    `;
+  });
+
+  adminSection.innerHTML = `
+    <div class="admin-panel">
+      <h3>بەشی بەڕێوەبردن</h3>
+      ${fieldsHTML}
+      <button onclick="updateAndSave()">خەزنکردنی گۆڕانکاریەکان</button>
+    </div>
+  `;
+}
+
+function updateAndSave() {
+  appData.companyName = document.getElementById('admin-company-name').value;
+  appData.slidingSlogans = document.getElementById('admin-slogans').value.split('\n').filter(s => s.trim() !== '');
+  appData.logoUrl = document.getElementById('admin-logo-url').value;
+
+  appData.links.forEach((link, index) => {
+    const input = document.getElementById(`admin-link-${index}`);
+    if (input) {
+      link.label = document.getElementById(`admin-link-label-${index}`).value;
+      link.sub = document.getElementById(`admin-link-sub-${index}`).value;
+      link.url = input.value;
+      // Automatically update tel: and wa.me links based on URL
+      if (link.type === 'phone' && !link.url.startsWith('tel:')) {
+        link.url = `tel:${link.url}`;
+      }
+      if (link.type === 'whatsapp' && !link.url.includes('wa.me')) {
+        const phone = link.url.replace(/\D/g,'');
+        link.url = `https://wa.me/${phone}`;
+      }
+    }
+  });
+
+  appData.specialAds.forEach((ad, index) => {
+    ad.label = document.getElementById(`admin-ad-label-${index}`).value;
+    ad.imageUrl = document.getElementById(`admin-ad-image-${index}`).value;
+    ad.linkUrl = document.getElementById(`admin-ad-link-${index}`).value;
+  });
+
+  saveData();
+  renderLinks();
+  alert('گۆڕانکارییەکان بە سەرکەوتوویی خەزنکران!');
+}
+
+function initAdmin() {
+  const password = prompt('تکایە وشەی نهێنی بنووسە بۆ چوونەژوورەوە:');
+  if (password === '1234') { // Your secret password
+    renderAdminPanel();
+  } else if (password) {
+    alert('وشەی نهێنی هەڵەیە!');
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'e') { // Ctrl + E to open admin
+    e.preventDefault();
+    initAdmin();
+  }
+});
+
+// ڕێگایەکی نوێ بۆ کردنەوەی بەشی ئەدمین لەسەر مۆبایل
+let adminClickCount = 0;
+let adminClickTimer = null;
+companyNameEl.addEventListener('click', () => {
+    adminClickCount++;
+    // ئەگەر لە ماوەی ٢ چرکەدا کرتەکان تەواو نەکران، سفر دەبێتەوە
+    if (adminClickTimer) clearTimeout(adminClickTimer);
+    adminClickTimer = setTimeout(() => {
+        adminClickCount = 0; 
+    }, 2000);
+
+    // ئەگەر ٥ جار کرتەی لێکرا، ئەوا بەشی ئەدمین بکەرەوە
+    if (adminClickCount >= 5) {
+        clearTimeout(adminClickTimer);
+        adminClickCount = 0;
+        initAdmin();
+    }
+});
+
+// Initial Load
+loadData();
+renderLinks();
+
+</script>
+</body>
+</html>
