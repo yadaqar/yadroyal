@@ -416,6 +416,9 @@
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// تکایە ئەم لینکە بگۆڕە بەو لینکەی لە هەنگاوی دووەمدا وەریدەگریت
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxg3rAaBPE2nxQgGGG-xzCxr2XL2TPxj6htVSGKembG2aj1zJMmpr4I1CQDw9zLJRx_oA/exec";
+
 const linksContainer = document.getElementById('links-container');
 const adminSection = document.getElementById('admin-section');
 const companyNameEl = document.getElementById('company-name');
@@ -454,21 +457,35 @@ let appData = {
   ]
 };
 
-function saveData() {
-  localStorage.setItem('realEstateAppData', JSON.stringify(appData));
-}
-
-function loadData() {
-  const savedData = localStorage.getItem('realEstateAppData');
-  if (savedData) {
-    // دڵنیادەبینەوە کە داتای نوێ لەگەڵ داتای کۆن تێکەڵ دەبێت
-    // بۆ ئەوەی ئەگەر نرخی نوێ زیادکرا، کێشە دروست نەکات
-    const loadedData = JSON.parse(savedData);
-    appData = { ...appData, ...loadedData };
+async function loadData() {
+  try {
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "لێرە لینکی گوگڵ سکریپت دابنێ") {
+      console.warn(" لینکی گوگڵ سکریپت دانەنراوە، داتای بنەڕەتی بەکاردێت");
+      // ئەگەر لینک دانەنرابوو، داتای ناوخۆیی بەکاربێنە
+      const savedData = localStorage.getItem('realEstateAppData');
+      if (savedData) appData = { ...appData, ...JSON.parse(savedData) };
+      return;
+    }
+    
+    document.body.style.opacity = '0.5'; // Show loading state
+    const response = await fetch(GOOGLE_SCRIPT_URL);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    if (data && Object.keys(data).length > 0) {
+      appData = { ...appData, ...data };
+    }
+  } catch (error) {
+    console.error('ناتوانرێت داتا لە گوگڵ شیتەوە وەربگیرێت:', error);
+    alert('کێشەیەک لە وەرگرتنی داتا لەسەر ئینتەرنێت هەیە. تکایە دڵنیابە لە لینکی سکریپت و پەیوەندی ئینتەرنێت.');
+    // لە کاتی هەڵەدا، داتای ناوخۆیی بەکاربێنە
+    const savedData = localStorage.getItem('realEstateAppData');
+    if (savedData) appData = { ...appData, ...JSON.parse(savedData) };
+  } finally {
+    document.body.style.opacity = '1';
   }
 }
 
-function renderLinks() {
+function renderPage() {
   companyNameEl.textContent = appData.companyName;
   
   const sloganContainer = document.getElementById('slogan-slider-inner');
@@ -591,7 +608,7 @@ function renderAdminPanel() {
   `;
 }
 
-function updateAndSave() {
+async function updateAndSave() {
   appData.companyName = document.getElementById('admin-company-name').value;
   appData.slidingSlogans = document.getElementById('admin-slogans').value.split('\n').filter(s => s.trim() !== '');
   appData.logoUrl = document.getElementById('admin-logo-url').value;
@@ -619,14 +636,41 @@ function updateAndSave() {
     ad.linkUrl = document.getElementById(`admin-ad-link-${index}`).value;
   });
 
-  saveData();
-  renderLinks();
-  alert('گۆڕانکارییەکان بە سەرکەوتوویی خەزنکران!');
+  // Save to local storage as a backup
+  localStorage.setItem('realEstateAppData', JSON.stringify(appData));
+
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "لێرە لینکی گوگڵ سکریپت دابنێ") {
+    alert("گۆڕانکارییەکان تەنها لەسەر ئەم ئامێرە خەزنکران چونکە لینکی گوگڵ سکریپت دانەنراوە.");
+    renderPage();
+    return;
+  }
+
+  const btn = document.querySelector('.admin-panel button');
+  btn.disabled = true;
+  btn.textContent = '...خەریکی خەزنکردنە لەسەر ئینتەرنێت';
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors', // Important for simple POST to Google Scripts
+      cache: 'no-cache',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(appData)
+    });
+    alert('گۆڕانکارییەکان بە سەرکەوتوویی لەسەر ئینتەرنێت خەزنکران!');
+  } catch (error) {
+    console.error('هەڵەیەک لەکاتی خەزنکردن ڕوویدا:', error);
+    alert('کێشەیەک لە خەزنکردن لەسەر ئینتەرنێت ڕوویدا. گۆڕانکارییەکان تەنها لەسەر ئەم ئامێرە خەزنکران.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'خەزنکردنی گۆڕانکاریەکان';
+    renderPage();
+  }
 }
 
 function initAdmin() {
   const password = prompt('تکایە وشەی نهێنی بنووسە بۆ چوونەژوورەوە:');
-  if (password === '1234') { // Your secret password
+  if (password === '111987') { // Your secret password
     renderAdminPanel();
   } else if (password) {
     alert('وشەی نهێنی هەڵەیە!');
@@ -660,8 +704,11 @@ companyNameEl.addEventListener('click', () => {
 });
 
 // Initial Load
-loadData();
-renderLinks();
+async function initializeApp() {
+  await loadData();
+  renderPage();
+}
+initializeApp();
 
 </script>
 </body>
